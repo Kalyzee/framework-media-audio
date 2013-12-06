@@ -29,26 +29,31 @@ public class WavReader extends AbstractReader implements IReader {
 
 	private IAudioData readData(InputStream is) throws AudioReaderException {
 		try {
-			byte[] dataResult = null;
-			byte[] reader4bits = new byte[4];
-
-			while (is.read(reader4bits) != -1) {
-
-				String dataType = new String(reader4bits);
-				is.read(reader4bits);
-				int length = ((reader4bits[3] & 0xFF) << 24)
-						| ((reader4bits[2] & 0xFF) << 16)
-						| ((reader4bits[1] & 0xFF) << 8)
-						| (reader4bits[0] & 0xFF);
-				byte[] data = new byte[length];
-				is.read(data);
-				if (dataType.equals("data")) {
-
-					dataResult = data;
-				}
-			}
 			AudioData ad = new AudioData();
-			ad.setData(dataResult);
+
+			byte[] reader4bits = new byte[4];
+			
+			InputStream audioInputStream = null;;
+			
+			int dataLength = -1; 
+
+			String dataType = "";
+
+			while (!dataType.equals("data") && is.read(reader4bits) != -1) {
+				dataType = new String(reader4bits);
+				dataLength = read4ToInt(is);
+				
+				if (dataType.equals("data")){
+					
+					ad.setInputStream(audioInputStream);
+					ad.setSize(dataLength);
+					System.out.println(dataLength);
+				}else{
+					is.skip(dataLength);
+				}
+				
+			}
+			
 			return ad;
 		} catch (IOException e) {
 			throw new AudioReaderException("Can't read stream" + e.getMessage());
@@ -76,11 +81,13 @@ public class WavReader extends AbstractReader implements IReader {
 				int numChannels = read2ToInt(inputStream);
 
 				int sampleRate = read4ToInt(inputStream);
-				int byteRate = read2ToInt(inputStream);
+				int byteRate = read4ToInt(inputStream);
+				inputStream.skip(2);
+				inputStream.skip(2);
+
 				if (subChunkSize > 16) {
 					inputStream.skip(subChunkSize - 16);
 				}
-
 				AudioHeader ah = new AudioHeader();
 				ah.setByteRate(byteRate);
 				ah.setNumChannels(numChannels);

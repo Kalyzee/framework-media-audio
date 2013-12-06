@@ -6,6 +6,6 @@ import com.kalyzee.framework.media.audio.api.IAudio;
 
 public interface IWriter {
 	
-	void write(OutputStream outputStream, IAudio audio);
+	void write(OutputStream outputStream, IAudio audio) throws AudioWriterException;
 	boolean isCompatible(String extensionFormat);
 }

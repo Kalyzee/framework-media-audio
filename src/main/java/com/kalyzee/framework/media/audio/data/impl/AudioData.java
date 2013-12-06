@@ -1,17 +1,27 @@
 package com.kalyzee.framework.media.audio.data.impl;
 
+import java.io.InputStream;
+
 import com.kalyzee.framework.media.audio.data.api.IAudioData;
 
 public class AudioData implements IAudioData{
 
-	private byte[] data;
-	
-	public byte[] getData() {
-		return data;
+	private InputStream inputStream;
+	private int size;
+	public InputStream getInputStream() {
+		return inputStream;
 	}
 	
-	public void setData(byte[] data){
-		this.data = data;
+	public void setInputStream(InputStream inputStream){
+		this.inputStream = inputStream;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 }

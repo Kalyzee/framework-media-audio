@@ -52,5 +52,6 @@ public class AudioHeader implements IAudioHeader{
 		this.numChannels = channels;
 		
 	}
+
 	
 }
